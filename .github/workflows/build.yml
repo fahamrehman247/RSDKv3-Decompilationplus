@@ -1,4 +1,4 @@
-name: Build RSDKv3 Win64 and Android Unlocked
+name: Build RSDKv3 Android Unlocked Only
 
 on:
   push:
@@ -6,39 +6,7 @@ on:
       - master
   workflow_dispatch:
 
-env:
-  GENERAL_FLAGS: "-DRETRO_DISABLE_PLUS=OFF -DCMAKE_BUILD_TYPE=Release"
-  GENERAL_WIN_FLAGS: "-DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
-  WIN64_FLAGS: "-DVCPKG_TARGET_TRIPLET=x64-windows-static -DCMAKE_PREFIX_PATH=C:/vcpkg/installed/x64-windows-static/"
-
 jobs:
-  v3-windows-x64:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Install dependencies
-        run: vcpkg install glew sdl2 libogg libtheora libvorbis --triplet=x64-windows-static
-
-      - name: Build RSDKv3
-        run: |
-          cmake -B build ${{env.GENERAL_FLAGS}} ${{env.GENERAL_WIN_FLAGS}} ${{env.WIN64_FLAGS}}
-          cmake --build build --parallel --config Release
-
-      - name: Move artifacts
-        run: |
-          mkdir artifacts
-          mv ./build/Release/*.exe ./artifacts
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: SonicCD-Win64-Unlocked
-          path: artifacts
-
   v3-android:
     runs-on: windows-latest
     steps:
